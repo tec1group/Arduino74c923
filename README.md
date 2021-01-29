@@ -1,6 +1,6 @@
 # Arduino74c923
-Replacing your 74c923 keyboard encoder, with an Arduino
-T
+Replacing your 74c923 keyboard encoder, with an Arduino.
+
 So basically how it works, is we use a serial terminal to send keys to an Arduino, which is wired (via a buffer chip), into the TEC in place of the 74c923.
 The Arduino then 'emulates' the 74c923 and fools the TEC.
 
