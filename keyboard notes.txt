@@ -12,7 +12,7 @@ Also, the shift key is independent of the 74c923, and simply sets bit 5 of port 
 MON2:
 
 The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0. A value of 0xFF means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual keyvalue.
-The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. NMIote this "negative logic" state.
+The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. Note this "negative logic" state. Bits 6 and 7 are undefined, but the NMI code does not strip them out, meaning they probably need to be masked off by the programmer to ensure an accurate key value is being used (i.e. AND with 0x1F), test bit 6 for Shift, etc.
 
 
 
@@ -22,8 +22,7 @@ The NMI code at 0x0066 reads the keyboard value, ANDs it with 0x1F (i.e. discard
 
 I have not fully examined the MON1 code, but it appears that the I register is intended to hold the keypress, at least initially, and the overwriting of the A register is an unintentional bug. I'm not sure if ultimately the keypress is stored somewhere in memory, or not.
 
-
-MON1 Does not support the shift-key and pressing it does nothing due to the AND 0x1F instruction. Programs 
+MON1 Does not support the shift-key and pressing it does nothing due to the AND 0x1F instruction.
 
 
 
