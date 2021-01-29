@@ -1,0 +1,39 @@
+A primer on Keyboard Handling on the TEC
+
+In hardware, the 74c923 triggers an NMI inteupt to the CPU on each keypress, and presents the pressed key data on Z80 I/O port 0.
+
+
+What actually happens when a key is pressed varies from one monitor to another.
+
+Also, the shift key is independent of the 74c923, and simply sets bit 5 of port 0 low if pressed. This means pressing the shift key alone typically does nothing - it does not generate an NMI or affect code execution.
+
+
+
+MON2:
+
+The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0. A value of 0xFF means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual keyvalue.
+The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. NMIote this "negative logic" state.
+
+
+
+MON-1B:
+
+The NMI code at 0x0066 reads the keyboard value, ANDs it with 0x1F (i.e. discards bits 5, 6 and 7) and stores it to the A and I registers. Both registers original contents are destroyed.
+
+I have not fully examined the MON1 code, but it appears that the I register is intended to hold the keypress, at least initially, and the overwriting of the A register is an unintentional bug. I'm not sure if ultimately the keypress is stored somewhere in memory, or not.
+
+
+MON1 Does not support the shift-key and pressing it does nothing due to the AND 0x1F instruction. Programs 
+
+
+
+
+JMON:
+
+JMON ignores the NMI, in favour of a polled approach. The NMI code at 0x0066 is simply a RETN instruction - effectively a 'do nothing' operation. NMI code must still exist as MI is still generated in hardware.
+JMON simply polls I/O port 3 or 0, and tests bit 6. If bit 6=0, a 74c923 key is pressed. JMON polls Port 3 first as part of the DAT board. Without the DAT board, the resitor mod achieves the same result polling port 0.
+
+If bit 5=0, the Shift key is pressed. The code then reads they keyvalue and directly does whatever it wants with it.
+
+I am not certain if JMON then stores the keyvalue or provides any direct keyboard routines -- please refer to jims notes && issue 15 page 24 for further insight.
+
