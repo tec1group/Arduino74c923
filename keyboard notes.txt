@@ -1,6 +1,10 @@
 A primer on Keyboard Handling on the TEC
 
-In hardware, the 74c923 triggers an NMI inteupt to the CPU on each keypress, and presents the pressed key data on Z80 I/O port 0.
+In hardware, the 74c923 triggers an NMI inteupt to the CPU on each keypress, and presents the pressed key data on Z80 I/O port 0, bits 0-4 (Valid values 0x00 to 0x13)
+
+Keys 0-9 and a-f generate the same hex value, keys -, +, GO and ADDR are values 0x10 to 0x13 respectively.
+
+
 
 
 What actually happens when a key is pressed varies from one monitor to another.
@@ -11,7 +15,7 @@ Also, the shift key is independent of the 74c923, and simply sets bit 5 of port 
 
 MON2:
 
-The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0. A value of 0xFF means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual keyvalue.
+The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0 (this is the keyboard buffer memory location). A value of 0xFF stored by the MONitor means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual keyvalue, in order ro "reset" the keyboard buffer to the not-pressed state.
 The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. Note this "negative logic" state. Bits 6 and 7 are undefined, but the NMI code does not strip them out, meaning they probably need to be masked off by the programmer to ensure an accurate key value is being used (i.e. AND with 0x1F), test bit 6 for Shift, etc.
 
 
