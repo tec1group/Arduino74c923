@@ -9,3 +9,5 @@ PORT2 of the TEC for activity - this tells us the TEC is scanning the displays, 
 before the monitor was ready.
 
 Please sse the full readme.txt and the notes at the top of the sourcecode. A schematic is also provided.
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
